@@ -11,14 +11,46 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ProtectedImport } from './routes/_protected'
 import { Route as IndexImport } from './routes/index'
+import { Route as ProtectedPhotosIndexImport } from './routes/_protected/photos/index'
+import { Route as ProtectedHomeIndexImport } from './routes/_protected/home/index'
+import { Route as ProtectedAlbumsIndexImport } from './routes/_protected/albums/index'
+import { Route as ProtectedPhotosUploadIndexImport } from './routes/_protected/photos/upload/index'
 
 // Create/Update Routes
+
+const ProtectedRoute = ProtectedImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const ProtectedPhotosIndexRoute = ProtectedPhotosIndexImport.update({
+  path: '/photos/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedHomeIndexRoute = ProtectedHomeIndexImport.update({
+  path: '/home/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedAlbumsIndexRoute = ProtectedAlbumsIndexImport.update({
+  path: '/albums/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedPhotosUploadIndexRoute = ProtectedPhotosUploadIndexImport.update(
+  {
+    path: '/photos/upload/',
+    getParentRoute: () => ProtectedRoute,
+  } as any,
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -31,39 +63,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ProtectedImport
+      parentRoute: typeof rootRoute
+    }
+    '/_protected/albums/': {
+      id: '/_protected/albums/'
+      path: '/albums'
+      fullPath: '/albums'
+      preLoaderRoute: typeof ProtectedAlbumsIndexImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/home/': {
+      id: '/_protected/home/'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof ProtectedHomeIndexImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/photos/': {
+      id: '/_protected/photos/'
+      path: '/photos'
+      fullPath: '/photos'
+      preLoaderRoute: typeof ProtectedPhotosIndexImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/photos/upload/': {
+      id: '/_protected/photos/upload/'
+      path: '/photos/upload'
+      fullPath: '/photos/upload'
+      preLoaderRoute: typeof ProtectedPhotosUploadIndexImport
+      parentRoute: typeof ProtectedImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface ProtectedRouteChildren {
+  ProtectedAlbumsIndexRoute: typeof ProtectedAlbumsIndexRoute
+  ProtectedHomeIndexRoute: typeof ProtectedHomeIndexRoute
+  ProtectedPhotosIndexRoute: typeof ProtectedPhotosIndexRoute
+  ProtectedPhotosUploadIndexRoute: typeof ProtectedPhotosUploadIndexRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedAlbumsIndexRoute: ProtectedAlbumsIndexRoute,
+  ProtectedHomeIndexRoute: ProtectedHomeIndexRoute,
+  ProtectedPhotosIndexRoute: ProtectedPhotosIndexRoute,
+  ProtectedPhotosUploadIndexRoute: ProtectedPhotosUploadIndexRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '': typeof ProtectedRouteWithChildren
+  '/albums': typeof ProtectedAlbumsIndexRoute
+  '/home': typeof ProtectedHomeIndexRoute
+  '/photos': typeof ProtectedPhotosIndexRoute
+  '/photos/upload': typeof ProtectedPhotosUploadIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '': typeof ProtectedRouteWithChildren
+  '/albums': typeof ProtectedAlbumsIndexRoute
+  '/home': typeof ProtectedHomeIndexRoute
+  '/photos': typeof ProtectedPhotosIndexRoute
+  '/photos/upload': typeof ProtectedPhotosUploadIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/_protected/albums/': typeof ProtectedAlbumsIndexRoute
+  '/_protected/home/': typeof ProtectedHomeIndexRoute
+  '/_protected/photos/': typeof ProtectedPhotosIndexRoute
+  '/_protected/photos/upload/': typeof ProtectedPhotosUploadIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '' | '/albums' | '/home' | '/photos' | '/photos/upload'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '' | '/albums' | '/home' | '/photos' | '/photos/upload'
+  id:
+    | '__root__'
+    | '/'
+    | '/_protected'
+    | '/_protected/albums/'
+    | '/_protected/home/'
+    | '/_protected/photos/'
+    | '/_protected/photos/upload/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProtectedRoute: typeof ProtectedRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProtectedRoute: ProtectedRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -78,11 +187,37 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/_protected"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/_protected": {
+      "filePath": "_protected.tsx",
+      "children": [
+        "/_protected/albums/",
+        "/_protected/home/",
+        "/_protected/photos/",
+        "/_protected/photos/upload/"
+      ]
+    },
+    "/_protected/albums/": {
+      "filePath": "_protected/albums/index.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/home/": {
+      "filePath": "_protected/home/index.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/photos/": {
+      "filePath": "_protected/photos/index.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/photos/upload/": {
+      "filePath": "_protected/photos/upload/index.tsx",
+      "parent": "/_protected"
     }
   }
 }
