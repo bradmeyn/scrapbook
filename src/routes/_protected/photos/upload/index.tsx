@@ -55,7 +55,7 @@ function UploadPage() {
       </a>
       <h1 className="text-3xl font-bold">Upload</h1>
 
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl">
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-2">Select Photos</h2>
           <div
