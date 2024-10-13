@@ -1,5 +1,6 @@
-import { createFileRoute, useLoaderData, Link } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { CreateAlbumDialog } from "./-components/CreateAlbumDialog";
+import { Link } from "@tanstack/react-router";
 
 // Mock function to get albums - replace with actual API call
 const getAlbums = async () => {
@@ -8,19 +9,22 @@ const getAlbums = async () => {
     {
       id: 1,
       title: "Vacation 2023",
-      coverPhoto: "/api/placeholder/300/200",
+      coverPhoto:
+        "https://images.pexels.com/photos/18638835/pexels-photo-18638835/free-photo-of-fluffy-furry-dog.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       photoCount: 42,
     },
     {
       id: 2,
       title: "Family Reunion",
-      coverPhoto: "/api/placeholder/300/200",
+      coverPhoto:
+        "https://images.pexels.com/photos/18638835/pexels-photo-18638835/free-photo-of-fluffy-furry-dog.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       photoCount: 78,
     },
     {
       id: 3,
       title: "Birthday Party",
-      coverPhoto: "/api/placeholder/300/200",
+      coverPhoto:
+        "https://images.pexels.com/photos/18638835/pexels-photo-18638835/free-photo-of-fluffy-furry-dog.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       photoCount: 25,
     },
     // Add more mock albums as needed
@@ -42,13 +46,7 @@ function AlbumsPage() {
     <main className="flex-1 container">
       <div className="flex justify-between items-center mb-4 mt-4">
         <h1 className="text-2xl text-slate-600">Albums</h1>
-        <Link
-          to="/_protected/albums/new"
-          className="text-rose-500 flex items-center"
-        >
-          <Plus size={20} className="mr-1" />
-          New Album
-        </Link>
+        <CreateAlbumDialog />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {albums.map((album) => (
@@ -76,3 +74,5 @@ function Album({ id, title, coverPhoto, photoCount }) {
     </Link>
   );
 }
+
+export default AlbumsPage;

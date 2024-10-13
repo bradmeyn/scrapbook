@@ -1,11 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, ChevronDown } from "lucide-react";
 import { ReusableDialog } from "@components/ReusableDialog";
+import * as Select from "@radix-ui/react-select";
 
 export function UploadDialog() {
   const [dragActive, setDragActive] = useState(false);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState("");
 
   const handleDrag = useCallback((e) => {
     e.preventDefault();
@@ -50,6 +52,7 @@ export function UploadDialog() {
       setFiles([]);
       setPreviews([]);
       setDragActive(false);
+      setSelectedAlbum("");
     }
   };
 
@@ -58,7 +61,7 @@ export function UploadDialog() {
       <div>
         <h2 className="text-lg font-semibold mb-2">Select Photos</h2>
         <div
-          className={`border-2 border-dashed rounded-lg p-8 min-h-60 text-center cursor-pointer transition-colors ${
+          className={`border-2 border-dashed rounded-lg p-8 min-h-60 flex items-center justify-center text-center cursor-pointer transition-colors ${
             dragActive
               ? "border-rose-500 bg-rose-50"
               : "border-gray-300 hover:border-rose-500"
@@ -110,17 +113,40 @@ export function UploadDialog() {
 
       <div>
         <h2 className="text-lg font-semibold mb-2">Album</h2>
-        <select className="w-full p-2 border rounded">
-          <option>Select an album</option>
-          {/* Populate with user's albums */}
-        </select>
+        <Select.Root value={selectedAlbum} onValueChange={setSelectedAlbum}>
+          <Select.Trigger className="inline-flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+            <Select.Value placeholder="Select an album" />
+            <Select.Icon>
+              <ChevronDown size={16} />
+            </Select.Icon>
+          </Select.Trigger>
+          <Select.Portal>
+            <Select.Content className="overflow-hidden bg-white rounded-md shadow-lg">
+              <Select.Viewport className="p-1">
+                <Select.Item
+                  value="album1"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-rose-100"
+                >
+                  <Select.ItemText>Album 1</Select.ItemText>
+                </Select.Item>
+                <Select.Item
+                  value="album2"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-rose-100"
+                >
+                  <Select.ItemText>Album 2</Select.ItemText>
+                </Select.Item>
+                {/* Add more album options as needed */}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
       </div>
 
       <div className="flex justify-end space-x-4">
         <button className="px-4 py-2 text-gray-600 hover:text-gray-800">
           Cancel
         </button>
-        <button className="px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-600 transition-colors">
+        <button className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors">
           Upload
         </button>
       </div>

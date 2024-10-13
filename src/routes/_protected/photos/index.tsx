@@ -7,7 +7,7 @@ import Photo from "../-components/Photo";
 export const Route = createFileRoute("/_protected/photos/")({
   component: PhotosPage,
   loader: async () => {
-    const data = await getPhotos("cavoodles");
+    const data = await getPhotos("dogs");
     return data;
   },
 });

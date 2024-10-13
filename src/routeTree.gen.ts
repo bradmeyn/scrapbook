@@ -17,6 +17,7 @@ import { Route as ProtectedPhotosIndexImport } from './routes/_protected/photos/
 import { Route as ProtectedHomeIndexImport } from './routes/_protected/home/index'
 import { Route as ProtectedAlbumsIndexImport } from './routes/_protected/albums/index'
 import { Route as ProtectedPhotosUploadIndexImport } from './routes/_protected/photos/upload/index'
+import { Route as ProtectedAlbumsidIndexImport } from './routes/_protected/albums/[id]/index'
 
 // Create/Update Routes
 
@@ -51,6 +52,11 @@ const ProtectedPhotosUploadIndexRoute = ProtectedPhotosUploadIndexImport.update(
     getParentRoute: () => ProtectedRoute,
   } as any,
 )
+
+const ProtectedAlbumsidIndexRoute = ProtectedAlbumsidIndexImport.update({
+  path: '/albums/[id]/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -91,6 +97,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedPhotosIndexImport
       parentRoute: typeof ProtectedImport
     }
+    '/_protected/albums/[id]/': {
+      id: '/_protected/albums/[id]/'
+      path: '/albums/[id]'
+      fullPath: '/albums/[id]'
+      preLoaderRoute: typeof ProtectedAlbumsidIndexImport
+      parentRoute: typeof ProtectedImport
+    }
     '/_protected/photos/upload/': {
       id: '/_protected/photos/upload/'
       path: '/photos/upload'
@@ -107,6 +120,7 @@ interface ProtectedRouteChildren {
   ProtectedAlbumsIndexRoute: typeof ProtectedAlbumsIndexRoute
   ProtectedHomeIndexRoute: typeof ProtectedHomeIndexRoute
   ProtectedPhotosIndexRoute: typeof ProtectedPhotosIndexRoute
+  ProtectedAlbumsidIndexRoute: typeof ProtectedAlbumsidIndexRoute
   ProtectedPhotosUploadIndexRoute: typeof ProtectedPhotosUploadIndexRoute
 }
 
@@ -114,6 +128,7 @@ const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedAlbumsIndexRoute: ProtectedAlbumsIndexRoute,
   ProtectedHomeIndexRoute: ProtectedHomeIndexRoute,
   ProtectedPhotosIndexRoute: ProtectedPhotosIndexRoute,
+  ProtectedAlbumsidIndexRoute: ProtectedAlbumsidIndexRoute,
   ProtectedPhotosUploadIndexRoute: ProtectedPhotosUploadIndexRoute,
 }
 
@@ -127,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/albums': typeof ProtectedAlbumsIndexRoute
   '/home': typeof ProtectedHomeIndexRoute
   '/photos': typeof ProtectedPhotosIndexRoute
+  '/albums/[id]': typeof ProtectedAlbumsidIndexRoute
   '/photos/upload': typeof ProtectedPhotosUploadIndexRoute
 }
 
@@ -136,6 +152,7 @@ export interface FileRoutesByTo {
   '/albums': typeof ProtectedAlbumsIndexRoute
   '/home': typeof ProtectedHomeIndexRoute
   '/photos': typeof ProtectedPhotosIndexRoute
+  '/albums/[id]': typeof ProtectedAlbumsidIndexRoute
   '/photos/upload': typeof ProtectedPhotosUploadIndexRoute
 }
 
@@ -146,14 +163,29 @@ export interface FileRoutesById {
   '/_protected/albums/': typeof ProtectedAlbumsIndexRoute
   '/_protected/home/': typeof ProtectedHomeIndexRoute
   '/_protected/photos/': typeof ProtectedPhotosIndexRoute
+  '/_protected/albums/[id]/': typeof ProtectedAlbumsidIndexRoute
   '/_protected/photos/upload/': typeof ProtectedPhotosUploadIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/albums' | '/home' | '/photos' | '/photos/upload'
+  fullPaths:
+    | '/'
+    | ''
+    | '/albums'
+    | '/home'
+    | '/photos'
+    | '/albums/[id]'
+    | '/photos/upload'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/albums' | '/home' | '/photos' | '/photos/upload'
+  to:
+    | '/'
+    | ''
+    | '/albums'
+    | '/home'
+    | '/photos'
+    | '/albums/[id]'
+    | '/photos/upload'
   id:
     | '__root__'
     | '/'
@@ -161,6 +193,7 @@ export interface FileRouteTypes {
     | '/_protected/albums/'
     | '/_protected/home/'
     | '/_protected/photos/'
+    | '/_protected/albums/[id]/'
     | '/_protected/photos/upload/'
   fileRoutesById: FileRoutesById
 }
@@ -200,6 +233,7 @@ export const routeTree = rootRoute
         "/_protected/albums/",
         "/_protected/home/",
         "/_protected/photos/",
+        "/_protected/albums/[id]/",
         "/_protected/photos/upload/"
       ]
     },
@@ -213,6 +247,10 @@ export const routeTree = rootRoute
     },
     "/_protected/photos/": {
       "filePath": "_protected/photos/index.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/albums/[id]/": {
+      "filePath": "_protected/albums/[id]/index.tsx",
       "parent": "/_protected"
     },
     "/_protected/photos/upload/": {

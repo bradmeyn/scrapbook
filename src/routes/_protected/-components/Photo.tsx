@@ -1,54 +1,60 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { Check, X } from "lucide-react";
 
-export default function Photo({ id, src, alt, onSelect, isSelected }) {
+type PhotoProps = {
+  id: string;
+  src: string;
+  alt: string;
+  onSelect: (id: string, checked: boolean) => void;
+  initialSelected?: boolean;
+};
+
+export default function Photo({
+  id,
+  src,
+  alt,
+  onSelect,
+  initialSelected = false,
+}: PhotoProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSelected, setIsSelected] = useState<boolean>(initialSelected);
 
   const handleImageClick = (e) => {
     if (e.target.closest(".checkbox-container")) return;
     setIsDialogOpen(true);
   };
 
+  function handleSelect() {
+    setIsSelected((prev) => !prev);
+    onSelect(id, checked);
+  }
+
   return (
-    <div className="relative p-3 rounded bg-white border shadow group">
+    <div className="relative bg-white border shadow group cursor-pointer aspect-square hover:opacity-90  overflow-hidden rounded ">
+      <Checkbox.Root
+        className={`absolute top-4 left-4 size-6 group-hover:block rounded-full border-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 z-10 ${
+          isSelected
+            ? "bg-rose-500 border-rose-500"
+            : "bg-white border-gray-300 hidden"
+        }`}
+        checked={isSelected}
+        onCheckedChange={handleSelect}
+      >
+        <Checkbox.Indicator className="flex items-center justify-center text-white">
+          <Check size={16} />
+        </Checkbox.Indicator>
+      </Checkbox.Root>
+
       <img
-        className="rounded cursor-pointer transition-opacity duration-300"
+        className="size-full object-cover hover:scale-110 transition-transform"
         src={src}
         alt={alt}
         onClick={handleImageClick}
       />
-      <div
-        className={`absolute top-5 left-5 checkbox-container transition-opacity duration-300 ${
-          isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-        }`}
-      >
-        <Checkbox.Root
-          className={`flex h-6 w-6 appearance-none rounded-full items-center justify-center border-2 outline-none transition-colors duration-200 ${
-            isSelected
-              ? "bg-green-500 border-green-500"
-              : "bg-white border-white group-hover:border-white"
-          }`}
-          checked={isSelected}
-          onCheckedChange={onSelect}
-        >
-          <Checkbox.Indicator
-            className={isSelected ? "text-white" : "text-gray-600"}
-          >
-            <Check size={16} />
-          </Checkbox.Indicator>
-        </Checkbox.Root>
-      </div>
-      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 flex items-center justify-center">
-        <button
-          onClick={handleImageClick}
-          className="px-3 py-1 bg-white text-gray-800 rounded-full text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        >
-          View
-        </button>
-      </div>
-      <ImageViewerDialog
+
+      <ImageDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         src={src}
@@ -58,7 +64,14 @@ export default function Photo({ id, src, alt, onSelect, isSelected }) {
   );
 }
 
-function ImageViewerDialog({ isOpen, onClose, src, alt }) {
+type ImageDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  src: string;
+  alt: string;
+};
+
+function ImageDialog({ isOpen, onClose, src, alt }: ImageDialogProps) {
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
